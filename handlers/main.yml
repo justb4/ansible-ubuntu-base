@@ -1,0 +1,9 @@
+---
+- name: "restart sshd"
+  service: name=ssh state=restarted
+
+- name: "restart fail2ban"
+  service: name=fail2ban state=restarted
+
+#- name: reconfigure unattended-upgrades
+#  command: dpkg-reconfigure -f noninteractive unattended-upgrades

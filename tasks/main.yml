@@ -1,0 +1,94 @@
+---
+
+- name: "Install latest packages"
+  apt: update_cache=yes upgrade=full
+
+- name: "Set Hostname"
+  hostname: name={{ inventory_hostname }}
+
+- name: "Install commonly used packages"
+  apt: pkg={{ item }} state=present
+  with_items:
+    - fail2ban
+    - git
+    - htop
+    - emacs-nox
+    - unattended-upgrades
+    - cowsay
+    - logwatch
+    - screen
+    - wget
+    - curl
+    - pwgen
+    - python-setuptools
+    - ufw
+    - whois
+
+- name: "Setting up UFW firewall"
+  action: lineinfile dest=/etc/default/ufw regexp="^IPV6" line="IPV6=yes" state=present
+
+- name: "Setting up UFW firewall - deny all"
+  ufw: state=enabled policy=deny
+
+- name: "Setting up UFW firewall - open ports: {{ ufw_open_ports }}"
+  ufw: rule=allow port={{ item }} proto=tcp
+  with_items: "{{ ufw_open_ports }}"
+
+- name: "Remove unattended security updates option"
+  file: path=/etc/apt/apt.conf.d/10periodic state=absent
+
+- name: "Add unattended security updates option"
+  blockinfile:
+    dest: /etc/apt/apt.conf.d/10periodic
+    create: yes
+    block: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::AutocleanInterval "7";
+      APT::Periodic::Unattended-Upgrade "1";
+
+- name: "Set Message Of The Day"
+  copy: src=motd dest=/etc/motd mode=644
+
+- name: "Config Logwatch "
+  cron: name="send logwatch logs" minute="0" hour="0" job="/usr/sbin/logwatch --output mail --mailto {{ my_email }} --detail high" state=present
+
+- name: "Config Emacs root"
+  lineinfile:
+    path: ~/.bashrc
+    line: alias e='emacs'
+    insertafter: alias l='ls -CF'
+
+- name: "Config Emacs {{ my_admin_user }}"
+  lineinfile:
+    path: "/home/{{ my_admin_user }}/.bashrc"
+    line: alias e='emacs'
+    insertafter: alias l='ls -CF'
+
+- name: "Config Fail2Ban"
+  replace:
+    path: /etc/fail2ban/jail.conf
+    regexp: '(^bantime)\s+\=\s+10m'
+    replace: 'bantime  = 1440m'
+    backup: yes
+  notify: restart fail2ban
+
+- name: "Create random root password"
+  apt: name={{ item }} state=present
+  with_items:
+    - pwgen
+    - whois
+- shell: /usr/bin/pwgen -s 40 1
+  register: root_password
+- shell: "/usr/bin/mkpasswd {{ root_password.stdout }} --method=SHA-512"
+  register: root_crypted_password
+- user: name=root password={{ root_crypted_password.stdout }}
+- debug: msg="Password for user 'root' has been set to {{ root_password.stdout }}"
+
+- name: "Disable ssh root logins without the use of a valid ssh key"
+  lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^PermitRootLogin ' line='PermitRootLogin without-password'
+  notify: restart sshd
+
+- name: "Disable ssh password logins for regular users"
+  lineinfile: dest=/etc/ssh/sshd_config state=present regexp='^PasswordAuthentication ' line='PasswordAuthentication no'
+  notify: restart sshd
