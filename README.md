@@ -1,4 +1,4 @@
-# ansible-ubuntu
+# ansible-ubuntu-base
 
 Common [Ansible](https://www.ansible.com/) Roles I use to provision and secure a fresh Ubuntu server.
 This used to be a lot of handwork, [Ansible](https://www.ansible.com/) is great!
@@ -16,6 +16,21 @@ For more advanced stuff like adding Users, Postfix Docker I use great Roles from
 * Docker and -Compose: https://galaxy.ansible.com/geerlingguy/docker
 * Postfix: https://galaxy.ansible.com/oefenweb/postfix
 * Python Pip: https://galaxy.ansible.com/geerlingguy/pip (Again that Geerling Guy, he's amazing!) 
+
+Checkout my `https://github.com/justb4/ansible-ubuntu-ntp` Role as well, for installing NTP with options.
+
+## Install
+
+```bash
+
+ ansible-galaxy install https://github.com/justb4/ansible-ubuntu-base
+ 
+ # or locally in specific dir
+ 
+ ansible-galaxy install --roles-path ./roles https://github.com/justb4/ansible-ubuntu-base
+
+
+```
 
 ## Example Playbook
 
@@ -59,8 +74,11 @@ some vars and have a gmail account in this case.
            runas: "ALL=(ALL)"
            commands: "NOPASSWD: ALL"
 
-    - name: base
-      tags: base
+    - name: ansible-ubuntu-base
+      tags: ubuntu-base
+
+    - name: ansible-ubuntu-ntp
+      tags: ubuntu-ntp
 
     - name: oefenweb.postfix
       tags: postfix
