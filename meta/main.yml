@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: "Just van den Broecke"
+  company: Just Objects
+  license: GNU GPL v3
+  min_ansible_version: 1.4
+  platforms:
+   - name: Ubuntu
+     versions:
+      - trusty
+      - xenial
+      - bionic
+      - cosmic
+      - disco
+  categories:
+   - system
+dependencies: []
