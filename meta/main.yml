@@ -12,6 +12,10 @@ galaxy_info:
       - bionic
       - cosmic
       - disco
+      - eoan
+      - focal
+      - groovy
+      - hirsute
   categories:
    - system
 dependencies: []

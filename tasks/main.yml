@@ -75,10 +75,10 @@
   notify: restart fail2ban
 
 - name: "Create random root password"
-  apt: name={{ item }} state=present
-  with_items:
-    - pwgen
-    - whois
+  apt:
+    pkg:
+      - pwgen
+      - whois
 - shell: /usr/bin/pwgen -s 40 1
   register: root_password
 - shell: "/usr/bin/mkpasswd {{ root_password.stdout }} --method=SHA-512"
