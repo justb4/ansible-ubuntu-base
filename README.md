@@ -100,6 +100,6 @@ some vars and have a gmail account in this case.
 
 ## Credits
 
-* Initial Inspiration: https://github.com/5car1z/ansible-debian-provisioning
+* Initial Inspiration: https://github.com/5car1z/ansible-debian-provisioning (update 2021: that repo now private or deleted?)
 * [Jeff Geerling, geerlingguy](https://galaxy.ansible.com/geerlingguy) buy his book [Ansible for Devops](https://leanpub.com/ansible-for-devops) on LeanPub to support him!
 
