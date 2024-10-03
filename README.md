@@ -21,17 +21,42 @@ Checkout my `https://github.com/justb4/ansible-ubuntu-ntp` Role as well, for ins
 
 ## Install
 
+Install and name it `justb4.ubuntu-base`.
+
 ```bash
 
- ansible-galaxy install https://github.com/justb4/ansible-ubuntu-base
+ ansible-galaxy role install https://github.com/justb4/ansible-ubuntu-base,,justb4.ubuntu-base
  
  # or locally in specific dir
  
- ansible-galaxy install --roles-path ./roles https://github.com/justb4/ansible-ubuntu-base
+ ansible-galaxy role install --roles-path ./roles https://github.com/justb4/ansible-ubuntu-base,,justb4.ubuntu-base
 
 
 ```
 
+Or with a typical `requirements.yml` file:
+
+```
+# Installs from Ansible galaxy
+- src: sansible.users_and_groups
+  version: v2.0.5
+
+- src: geerlingguy.pip
+  version: 3.0.3
+
+- src: geerlingguy.docker
+  version: 7.4.1
+
+# from GitHub
+- src: https://github.com/justb4/ansible-ubuntu-base
+  name: justb4.ubuntu-base
+  version: v1.5
+
+- src: https://github.com/justb4/ansible-ubuntu-ntp
+  name: justb4.ubuntu-ntp
+  version: v1.0
+
+```
 ## Example Playbook
 
 This sketches how I use the base-role defined here and from Galaxy in a Playbook. Mainly need to fill in
@@ -74,10 +99,10 @@ some vars and have a gmail account in this case.
            runas: "ALL=(ALL)"
            commands: "NOPASSWD: ALL"
 
-    - name: ansible-ubuntu-base
+    - name: justb4.ubuntu-base
       tags: ubuntu-base
 
-    - name: ansible-ubuntu-ntp
+    - name: justb4.ubuntu-ntp
       tags: ubuntu-ntp
 
     - name: oefenweb.postfix

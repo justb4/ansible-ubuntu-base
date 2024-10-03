@@ -1,21 +1,18 @@
 ---
+dependencies: []
+
 galaxy_info:
-  author: "Just van den Broecke"
+  author: Just van den Broecke
+  description: Base installs for robust and secured Ubuntu server.
   company: Just Objects
   license: GNU GPL v3
-  min_ansible_version: 1.4
+  min_ansible_version: 2.10
   platforms:
    - name: Ubuntu
      versions:
-      - trusty
-      - xenial
-      - bionic
-      - cosmic
-      - disco
-      - eoan
-      - focal
-      - groovy
-      - hirsute
+        - bionic
+        - focal
+        - jammy
+        - noble
   categories:
    - system
-dependencies: []
