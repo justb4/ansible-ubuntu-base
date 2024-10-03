@@ -3,8 +3,8 @@
 - name: "Install latest packages"
   apt: update_cache=yes upgrade=full
 
-- name: "Set Hostname"
-  hostname: name={{ inventory_hostname }}
+#- name: "Set Hostname"
+#  hostname: name={{ inventory_hostname }}
 
 - name: "Install commonly used packages"
   apt:
@@ -16,15 +16,33 @@
     - unattended-upgrades
     - cowsay
     - logwatch
+    - ntp
     - screen
     - wget
     - curl
     - nmon
     - pwgen
-    - python-setuptools
+    - txdata
     - ufw
     - whois
 
+# NTP and Timezone setup
+- name: start ntp
+  service: name=ntp state=started enabled=true
+
+- name: set ntp server
+  lineinfile: dest=/etc/ntpsec/ntp.conf state=present regexp='^server ' line='server {{ ntp_server }} iburst'
+  notify: restart ntp
+
+# Note that there may be more than one 'server' line in this file (hence we
+# cannot do this with just one regexp rule).
+- name: remove all other ntp servers
+  lineinfile: dest=/etc/ntpsec/ntp.conf state=absent regexp="^server\s+(?!{{ ntp_server }})"
+  notify: restart ntp
+
+- shell: "timedatectl set-timezone {{ timezone }}"
+
+# UFW Firewall setup
 - name: "Setting up UFW firewall"
   action: lineinfile dest=/etc/default/ufw regexp="^IPV6" line="IPV6=yes" state=present
 
@@ -35,6 +53,7 @@
   ufw: rule=allow port={{ item }} proto=tcp
   with_items: "{{ ufw_open_ports }}"
 
+# Security updates
 - name: "Remove unattended security updates option"
   file: path=/etc/apt/apt.conf.d/10periodic state=absent
 

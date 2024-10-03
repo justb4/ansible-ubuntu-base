@@ -1,2 +1,4 @@
 ---
 ufw_open_ports: ['22', '80', '443']
+timezone: Europe/Amsterdam
+ntp_server: 0.debian.pool.ntp.org
