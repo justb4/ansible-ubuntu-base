@@ -3,9 +3,6 @@
 - name: "Install latest packages"
   apt: update_cache=yes upgrade=full
 
-#- name: "Set Hostname"
-#  hostname: name={{ inventory_hostname }}
-
 - name: "Install commonly used packages"
   apt:
     pkg:
@@ -14,6 +11,7 @@
     - htop
     - emacs-nox
     - unattended-upgrades
+    - apt-show-versions
     - cowsay
     - logwatch
     - ntp
@@ -22,11 +20,16 @@
     - curl
     - nmon
     - pwgen
-    - txdata
+    - tzdata
     - ufw
     - whois
 
+# Hostname
+- shell: hostnamectl set-hostname {{ inventory_hostname }}
+
 # NTP and Timezone setup
+- shell: "timedatectl set-timezone {{ timezone }}"
+
 - name: start ntp
   service: name=ntp state=started enabled=true
 
@@ -39,8 +42,6 @@
 - name: remove all other ntp servers
   lineinfile: dest=/etc/ntpsec/ntp.conf state=absent regexp="^server\s+(?!{{ ntp_server }})"
   notify: restart ntp
-
-- shell: "timedatectl set-timezone {{ timezone }}"
 
 # UFW Firewall setup
 - name: "Setting up UFW firewall"

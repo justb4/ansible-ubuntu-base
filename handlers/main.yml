@@ -5,5 +5,8 @@
 - name: "restart fail2ban"
   service: name=fail2ban state=restarted
 
+- name: restart ntp
+  service: name=ntp state=restarted
+
 #- name: reconfigure unattended-upgrades
 #  command: dpkg-reconfigure -f noninteractive unattended-upgrades
