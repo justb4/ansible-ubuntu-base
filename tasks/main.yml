@@ -24,6 +24,17 @@
     - ufw
     - whois
 
+# Set environment vars (defaults if none supplied in vars)
+- name: "Populate /etc/environment"
+  become: true
+  become_user: root
+  lineinfile:
+    dest: "/etc/environment"
+    state: present
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value}}"
+  with_dict: "{{ etc_environment }}"
+
 # Hostname
 - shell: hostnamectl set-hostname {{ inventory_hostname }}
 
@@ -71,8 +82,14 @@
 - name: "Set Message Of The Day"
   copy: src=motd dest=/etc/motd mode=644
 
+- name: "Copy utility scripts"
+  copy: src=bin/ dest=/usr/bin/ mode=755
+
 - name: "Config Logwatch "
-  cron: name="send logwatch logs" minute="0" hour="0" job="/usr/sbin/logwatch --output mail --mailto {{ my_email }} --detail high" state=present
+  cron: name="save logwatch logs" minute="0" hour="0" job="/usr/sbin/logwatch --detail high --output file --filename /var/log/logwatch.txt" state=present
+
+- name: "Config Logwatch Email"
+  cron: name="mail logwatch logs" minute="10" hour="0" job="/usr/bin/sendmail.sh {{ MAIL_RECEIVER }} LOGWATCH_ATTACHED LOGWATCH_{{ inventory_hostname }} /var/log/logwatch.txt" state=present
 
 - name: "Config Emacs root"
   lineinfile:

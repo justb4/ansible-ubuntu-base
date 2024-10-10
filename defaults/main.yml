@@ -2,3 +2,12 @@
 ufw_open_ports: ['22', '80', '443']
 timezone: Europe/Amsterdam
 ntp_server: 0.debian.pool.ntp.org
+my_admin_user: myadmin
+my_email: me@myserver.com
+etc_environment:
+  MAIL_HOST: mymail.host.com
+  MAIL_PORT: 587
+  MAIL_USER: myuser
+  MAIL_SENDER: mail@sender.com
+  MAIL_PASSWORD: your_mail_pass
+  MAIL_RECEIVER: mail@receiver.com
