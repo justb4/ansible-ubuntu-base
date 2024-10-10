@@ -10,4 +10,3 @@ etc_environment:
   MAIL_USER: myuser
   MAIL_SENDER: mail@sender.com
   MAIL_PASSWORD: your_mail_pass
-  MAIL_RECEIVER: mail@receiver.com
