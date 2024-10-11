@@ -6,6 +6,7 @@
 import sys
 import smtplib
 import os
+import mimetypes
 from pathlib import Path
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -35,7 +36,13 @@ def send_mail(to, subject, message, files=[]):
 
     # Optional attachments
     for path in files:
-        part = MIMEBase('application', "octet-stream")
+        try:
+            main_type, sub_type = mimetypes.guess_type(path)[0].split('/')
+        except:
+            main_type = 'application'
+            sub_type = 'octet-stream'
+
+        part = MIMEBase(main_type, sub_type)
         with open(path, 'rb') as file:
             part.set_payload(file.read())
         encoders.encode_base64(part)
