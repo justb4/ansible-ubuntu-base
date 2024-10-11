@@ -89,7 +89,7 @@
   cron: name="save logwatch logs" minute="0" hour="0" job="/usr/sbin/logwatch --detail high --output file --filename /var/log/logwatch.txt" state=present
 
 - name: "Config Logwatch Email"
-  cron: name="mail logwatch logs" minute="10" hour="0" job="/usr/bin/sendmail.sh {{ my_email }} LOGWATCH_ATTACHED LOGWATCH_{{ inventory_hostname }} /var/log/logwatch.txt" state=present
+  cron: name="mail logwatch logs" minute="10" hour="0" job="/usr/bin/sendmail.sh {{ my_email }} LOGWATCH_{{ inventory_hostname }} LOGWATCH_ATTACHED_{{ inventory_hostname }} /var/log/logwatch.txt" state=present
 
 - name: "Config Emacs root"
   lineinfile:
