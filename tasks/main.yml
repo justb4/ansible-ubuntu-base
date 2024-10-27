@@ -19,6 +19,8 @@
     - wget
     - curl
     - nmon
+    - sysstat
+    - ifstat
     - pwgen
     - tzdata
     - ufw
